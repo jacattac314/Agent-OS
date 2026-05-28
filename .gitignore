@@ -9,6 +9,9 @@
 !.obsidian/appearance.json
 !.obsidian/hotkeys.json
 
+# Capture credentials (never commit)
+scripts/.capture-config
+
 # OS
 .DS_Store
 Thumbs.db
