@@ -1,0 +1,14 @@
+# Obsidian workspace state (local only)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache
+
+# Keep plugins and core config
+!.obsidian/plugins/
+!.obsidian/app.json
+!.obsidian/appearance.json
+!.obsidian/hotkeys.json
+
+# OS
+.DS_Store
+Thumbs.db
