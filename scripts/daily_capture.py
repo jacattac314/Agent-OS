@@ -4,8 +4,9 @@
 import json
 import subprocess
 import urllib.request
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from pathlib import Path
+import sys
 
 VAULT = Path.home() / "obsidian-agentic-vault"
 TODAY = date.today().isoformat()
@@ -23,25 +24,41 @@ def git_commits():
 
 
 def calendar_events():
-    script = """
-tell application "Calendar"
-    set today to current date
-    set bod to today - (time of today)
-    set eod to bod + 86399
-    set out to ""
-    repeat with c in every calendar
-        try
-            repeat with e in (every event of c whose start date >= bod and start date <= eod)
-                set t to time string of (start date of e)
-                set out to out & t & " — " & (summary of e) & linefeed
-            end repeat
-        end try
-    end repeat
-    return out
-end tell"""
-    r = subprocess.run(["osascript", "-e", script], capture_output=True, text=True)
-    lines = sorted(set(l.strip() for l in r.stdout.strip().splitlines() if l.strip()))
-    return "\n".join(f"- {l}" for l in lines) or "(none)"
+    ics_url = load_pat("GOOGLE_CALENDAR_ICS_URL")
+    if not ics_url:
+        return "(not configured — add GOOGLE_CALENDAR_ICS_URL to scripts/.capture-config)"
+    try:
+        from icalendar import Calendar
+        import urllib.request as req_mod
+
+        with req_mod.urlopen(ics_url, timeout=15) as r:
+            cal = Calendar.from_ical(r.read())
+
+        today = date.today()
+        events = []
+        for component in cal.walk():
+            if component.name != "VEVENT":
+                continue
+            dtstart = component.get("DTSTART")
+            if dtstart is None:
+                continue
+            val = dtstart.dt
+            # Handle all-day (date) vs timed (datetime)
+            if isinstance(val, datetime):
+                event_date = val.astimezone().date()
+                time_str = val.astimezone().strftime("%-I:%M %p")
+            else:
+                event_date = val
+                time_str = "all-day"
+            if event_date != today:
+                continue
+            summary = str(component.get("SUMMARY", "(no title)"))
+            events.append((time_str, summary))
+
+        events.sort()
+        return "\n".join(f"- {t} — {s}" for t, s in events) or "(no events today)"
+    except Exception as e:
+        return f"(calendar error: {e})"
 
 
 def load_pat(key):
