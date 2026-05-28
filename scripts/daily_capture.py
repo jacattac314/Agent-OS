@@ -24,16 +24,22 @@ def git_commits():
 
 
 def calendar_events():
+    # Try Claude-written cache first (written during morning session via MCP)
+    cache = VAULT / "scripts" / ".calendar-cache" / f"{TODAY}.json"
+    if cache.exists():
+        import json as _json
+        events = _json.loads(cache.read_text())
+        return "\n".join(f"- {e['time']} — {e['summary']}" for e in events)
+
+    # Fallback: ICS URL if configured
     ics_url = load_pat("GOOGLE_CALENDAR_ICS_URL")
     if not ics_url:
-        return "(not configured — add GOOGLE_CALENDAR_ICS_URL to scripts/.capture-config)"
+        return "(no calendar cache — open Claude Code to populate)"
     try:
         from icalendar import Calendar
         import urllib.request as req_mod
-
         with req_mod.urlopen(ics_url, timeout=15) as r:
             cal = Calendar.from_ical(r.read())
-
         today = date.today()
         events = []
         for component in cal.walk():
@@ -43,7 +49,6 @@ def calendar_events():
             if dtstart is None:
                 continue
             val = dtstart.dt
-            # Handle all-day (date) vs timed (datetime)
             if isinstance(val, datetime):
                 event_date = val.astimezone().date()
                 time_str = val.astimezone().strftime("%-I:%M %p")
@@ -54,7 +59,6 @@ def calendar_events():
                 continue
             summary = str(component.get("SUMMARY", "(no title)"))
             events.append((time_str, summary))
-
         events.sort()
         return "\n".join(f"- {t} — {s}" for t, s in events) or "(no events today)"
     except Exception as e:

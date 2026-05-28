@@ -9,8 +9,9 @@
 !.obsidian/appearance.json
 !.obsidian/hotkeys.json
 
-# Capture credentials (never commit)
+# Capture credentials and cache (never commit)
 scripts/.capture-config
+scripts/.calendar-cache/
 
 # OS
 .DS_Store
