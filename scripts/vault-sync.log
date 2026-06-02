@@ -14,3 +14,8 @@ To https://github.com/jacattac314/Agent-OS.git
    6ce570a..d65fea7  main -> main
 [2026-05-30] Synced successfully
 [2026-05-31 22:00:05.342388] Written → /Users/jack/obsidian-agentic-vault/Journal/2026-05-31.md
+[main 9c750a1] Daily vault sync — 2026-06-01
+ 2 files changed, 40 insertions(+)
+ create mode 100644 Journal/2026-05-31.md
+fatal: unable to access 'https://github.com/jacattac314/Agent-OS.git/': Could not resolve host: github.com
+[2026-06-01 22:00:07.089993] Written → /Users/jack/obsidian-agentic-vault/Journal/2026-06-01.md
