@@ -13,6 +13,11 @@
 scripts/.capture-config
 scripts/.calendar-cache/
 
+# Runtime logs and locks
+*.log
+System/logs/
+System/*.lock
+
 # OS
 .DS_Store
 Thumbs.db

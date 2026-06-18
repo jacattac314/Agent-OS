@@ -1,3 +1,12 @@
+---
+type: project
+aliases: []
+status: active
+updated: 2026-06-18
+sources:
+  - Journal/2026-05-28.md
+---
+
 # Agent OS
 
 ## Goal
@@ -21,8 +30,9 @@ A persistent memory and task layer that makes Claude useful across sessions — 
 - [x] MCP server registered (vault, user scope)
 - [x] Committed to GitHub
 - [x] .gitignore added
-- [ ] Daily auto-commit cron
+- [x] Nightly auto-commit cron (`scripts/vault-sync.sh` via launchd at midnight) — live as of 2026-05-28
 - [ ] Daily brief population (Asana + GitHub → journal Focus/Tasks)
+- [ ] `ASANA_PAT` configured in `scripts/.capture-config` — all auto-captures show "not configured" since 2026-05-29
 - [ ] Memory/ seeded with decisions and preferences
 
 ## Notes
